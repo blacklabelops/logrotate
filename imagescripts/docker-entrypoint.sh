@@ -17,6 +17,10 @@ if [ -n "${LOG_FILE}" ]; then
  touch ${LOG_FILE}
 fi
 
+if [ -n "${DELAYED_START}" ]; then
+  sleep ${DELAYED_START}
+fi
+
 logrotate_olddir=""
 
 if [ -n "${LOGROTATE_OLDDIR}" ]; then
@@ -134,10 +138,6 @@ ${logrotate_croninterval} /usr/sbin/logrotate -v /opt/logrotate/logrotate.conf $
 EOF
 
 crontab -l
-
-if [ -n "${DELAYED_START}" ]; then
-  sleep ${DELAYED_START}
-fi
 
 if [ "$1" = 'cron' ]; then
   croncommand="crond -n -x sch"${log_command}
