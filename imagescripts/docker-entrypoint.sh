@@ -134,6 +134,10 @@ if [ -n "${LOG_FILE}" ]; then
  log_command=" 2>&1 | tee -a "${LOG_FILE}
 fi
 
+if [ -n "${DELAYED_START}" ]; then
+  exec sleep ${DELAYED_START}
+fi
+
 if [ "$1" = 'cron' ]; then
   croncommand="crond -n -x sch"${log_command}
   bash -c "${croncommand}"
