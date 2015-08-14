@@ -10,6 +10,13 @@ if [ -f "/opt/logrotate/logrotate.conf" ]; then
   rm -f /opt/logrotate/logrotate.conf
 fi
 
+log_command=""
+
+if [ -n "${LOG_FILE}" ]; then
+ log_command=" 2>&1 | tee -a "${LOG_FILE}
+ touch ${LOG_FILE}
+fi
+
 logrotate_olddir=""
 
 if [ -n "${LOGROTATE_OLDDIR}" ]; then
@@ -127,12 +134,6 @@ ${logrotate_croninterval} /usr/sbin/logrotate -v /opt/logrotate/logrotate.conf $
 EOF
 
 crontab -l
-
-log_command=""
-
-if [ -n "${LOG_FILE}" ]; then
- log_command=" 2>&1 | tee -a "${LOG_FILE}
-fi
 
 if [ -n "${DELAYED_START}" ]; then
   exec sleep ${DELAYED_START}
