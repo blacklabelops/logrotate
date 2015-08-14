@@ -1,4 +1,4 @@
-This project for long running or productive Docker and Docker Container instances. Containers need a mechanism for managing logfiles. Otherwise your disk space will swapped full by lofiles and you lose your instance.
+This project for long running or productive Docker and Docker Container instances. Containers need a mechanism for managing logfiles. Otherwise your disk space will swapped full by logfiles and you lose your instance.
 
 This container can crawl for logfiles and rotate them. It is a side-car container
 for containers that write logfiles and need a log rotation mechanism. Just hook up some containers and define your
@@ -54,7 +54,7 @@ $ docker run -d \
 	blacklabelops/logrotate
 ~~~~
 
-## Customize Log File Ending
+# Customize Log File Ending
 
 You can define the file endings fluentd will attach to. The container will by default crawl for
 files ending with **.log**. This can be overriden and extended to any amount of file endings.
@@ -70,7 +70,7 @@ $ docker run -d \
 	blacklabelops/logrotate
 ~~~~
 
-> Crawls for file endings json and .xml.
+> Crawls for file endings .json and .xml.
 
 # Set the Log interval
 
