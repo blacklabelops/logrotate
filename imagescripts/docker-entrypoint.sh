@@ -105,15 +105,16 @@ IFS=$SAVEIFS
 
 for d in ${log_dirs}
 do
-  LOG_FILES=$(find ${d} -type f $LOGS_FILE_ENDINGS_INSTRUCTION)
-  for f in $LOG_FILES
+  for f in $(find ${d} -type f $LOGS_FILE_ENDINGS_INSTRUCTION);
   do
-    echo "Processing $f file..."
-    cat >> /opt/logrotate/logrotate.conf <<_EOF_
+    if [ -f "${f}" ]; then
+      echo "Processing $f file..."
+      cat >> /opt/logrotate/logrotate.conf <<_EOF_
 ${f} {
   missingok
 }
 _EOF_
+    fi
   done
 done
 
