@@ -109,8 +109,11 @@ do
   do
     if [ -f "${f}" ]; then
       echo "Processing $f file..."
+      file_owner_user=$(stat -c %U ${f})
+      file_owner_group=$(stat -c %G ${f})
       cat >> /opt/logrotate/logrotate.conf <<_EOF_
 ${f} {
+  su ${file_owner_user} ${file_owner_group}
   missingok
 }
 _EOF_
