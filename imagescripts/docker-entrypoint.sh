@@ -4,22 +4,36 @@
 
 set -e
 
+syslogger_tag=""
+
+if [ -n "${SYSLOGGER_TAG}" ]; then
+  syslogger_tag=" -t "${SYSLOGGER_TAG}
+fi
+
+syslogger_command=""
+
+if [ -n "${SYSLOGGER}" ]; then
+  syslogger_command="logger "${syslogger_tag}
+fi
+
+output() {
+  if [ -n "${SYSLOGGER}" ]; then
+    logger ${syslogger_tag} "$@"
+  fi
+  printf "$@"
+}
+
 # Resetting the default configuration file for
 # repeated starts.
 if [ -f "/opt/logrotate/logrotate.conf" ]; then
   rm -f /opt/logrotate/logrotate.conf
 fi
 
-log_command=""
-
-if [ -n "${LOG_FILE}" ]; then
- log_command=" 2>&1 | tee -a "${LOG_FILE}
- touch ${LOG_FILE}
-fi
-
 if [ -n "${DELAYED_START}" ]; then
   sleep ${DELAYED_START}
 fi
+
+# ----- Logrotate Config File Generation ------
 
 logrotate_olddir=""
 
@@ -74,6 +88,8 @@ ${logrotate_olddir}
 
 EOF
 
+# ----- Logfile Crawling ------
+
 log_dirs=""
 
 if [ -n "${LOGS_DIRECTORIES}" ]; then
@@ -108,7 +124,7 @@ do
   for f in $(find ${d} -type f $LOGS_FILE_ENDINGS_INSTRUCTION);
   do
     if [ -f "${f}" ]; then
-      echo "Processing $f file..."
+      output "Processing $f file..."
       file_owner_user=$(stat -c %U ${f})
       file_owner_group=$(stat -c %G ${f})
       if [ "$file_owner_user" != "UNKNOWN" ] && [ "$file_owner_group" != "UNKNOWN" ]; then
@@ -118,6 +134,8 @@ ${f} {
   missingok
 }
 _EOF_
+      else
+        output "File has unknown user or group: ${f}, user: ${file_owner_user}, group: ${file_owner_group}"
       fi
     fi
   done
@@ -125,10 +143,46 @@ done
 
 cat /opt/logrotate/logrotate.conf
 
-logrotate_cronlogfile=""
+# ----- Take all Log in Subfolders ------
 
-if [ -n "${LOGROTATE_LOGFILE}" ]; then
-  logrotate_cronlogfile=" 2>&1 | tee -a "${logrotate_cronlogfile}${LOGROTATE_LOGFILE}
+all_log_dirs=""
+
+if [ -n "${ALL_LOGS_DIRECTORIES}" ]; then
+  all_log_dirs=${ALL_LOGS_DIRECTORIES}
+fi
+
+for d in ${all_log_dirs}
+do
+  for f in $(find ${d} -type f);
+  do
+    if [ -f "${f}" ]; then
+      output "Processing $f file..."
+      file_owner_user=$(stat -c %U ${f})
+      file_owner_group=$(stat -c %G ${f})
+      if [ "$file_owner_user" != "UNKNOWN" ] && [ "$file_owner_group" != "UNKNOWN" ]; then
+        cat >> /opt/logrotate/logrotate.conf <<_EOF_
+${f} {
+  su ${file_owner_user} ${file_owner_group}
+  missingok
+}
+_EOF_
+      else
+        output "File has unknown user or group: ${f}, user: ${file_owner_user}, group: ${file_owner_group}"
+      fi
+    fi
+  done
+done
+
+# ----- Crontab Generation ------
+
+logrotate_cronlog=""
+
+if [ -n "${LOGROTATE_LOGFILE}" ] && [ ! -n "${SYSLOGGER}"]; then
+  logrotate_cronlog=" 2>&1 | tee -a "${logrotate_cronlogfile}${LOGROTATE_LOGFILE}
+else
+  if [ -n "${SYSLOGGER}" ]; then
+    logrotate_cronlog=" 2>&1 | "${syslogger_command}
+  fi
 fi
 
 logrotate_croninterval=""
@@ -140,20 +194,29 @@ else
 fi
 
 crontab <<EOF
-${logrotate_croninterval} /usr/sbin/logrotate -v /opt/logrotate/logrotate.conf ${logrotate_cronlogfile}
+${logrotate_croninterval} /usr/sbin/logrotate -v /opt/logrotate/logrotate.conf ${logrotate_cronlog}
 EOF
 
 crontab -l
 
+# ----- Cron Start ------
+
 log_command=""
 
-if [ -n "${LOG_FILE}" ]; then
-  log_command=" 2>&1 | tee -a "${LOG_FILE}
+if [ -n "${LOG_FILE}" ] && [ ! -n "${SYSLOGGER}"]; then
+ log_command=" 2>&1 | tee -a "${LOG_FILE}
+ touch ${LOG_FILE}
+else
+  if [ -n "${SYSLOGGER}" ]; then
+    log_command=" 2>&1 | "${syslogger_command}
+  fi
 fi
 
 if [ "$1" = 'cron' ]; then
   croncommand="crond -n -x sch"${log_command}
   bash -c "${croncommand}"
 fi
+
+#-----------------------
 
 exec "$@"
