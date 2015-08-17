@@ -16,11 +16,12 @@ if [ -n "${SYSLOGGER}" ]; then
   syslogger_command="logger "${syslogger_tag}
 fi
 
-output() {
+function output()
+{
   if [ -n "${SYSLOGGER}" ]; then
     logger ${syslogger_tag} "$@"
   fi
-  printf "$@"
+  echo "$@"
 }
 
 # Resetting the default configuration file for
@@ -173,6 +174,8 @@ _EOF_
   done
 done
 
+cat /opt/logrotate/logrotate.conf
+
 # ----- Crontab Generation ------
 
 logrotate_cronlog=""
@@ -193,9 +196,9 @@ else
   logrotate_croninterval="@"${logrotate_interval}
 fi
 
-crontab <<EOF
+crontab <<_EOF_
 ${logrotate_croninterval} /usr/sbin/logrotate -v /opt/logrotate/logrotate.conf ${logrotate_cronlog}
-EOF
+_EOF_
 
 crontab -l
 
