@@ -111,12 +111,14 @@ do
       echo "Processing $f file..."
       file_owner_user=$(stat -c %U ${f})
       file_owner_group=$(stat -c %G ${f})
-      cat >> /opt/logrotate/logrotate.conf <<_EOF_
+      if [ ! "$file_owner_user" -eq "UNKNOWN" ] && [ ! "$file_owner_group" -eq "UNKNOWN" ]; then
+        cat >> /opt/logrotate/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
   missingok
 }
 _EOF_
+      fi
     fi
   done
 done
