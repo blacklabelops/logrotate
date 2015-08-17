@@ -215,8 +215,14 @@ else
   fi
 fi
 
+cron_debug=""
+
+if [ -n "${CRON_DEBUG}" ]; then
+  cron_debug=" -x "${CRON_DEBUG}
+fi
+
 if [ "$1" = 'cron' ]; then
-  croncommand="crond -n -x sch"${log_command}
+  croncommand="crond -n "${cron_debug}${log_command}
   bash -c "${croncommand}"
 fi
 
