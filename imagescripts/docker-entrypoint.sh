@@ -75,9 +75,6 @@ ${logrotate_interval}
 # keep backlogs x times
 rotate ${logrotate_copies}
 
-# use date as a suffix of the rotated file
-dateext
-
 # maximum file size rotation?
 ${logrotate_size}
 
@@ -132,6 +129,13 @@ do
         cat >> /opt/logrotate/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
+  ${logrotate_interval}
+  ${logrotate_size}
+  rotate ${logrotate_copies}
+  ${logrotate_logfile_compression}
+  copytruncate
+  delaycompress
+  notifempty
   missingok
 }
 _EOF_
@@ -197,7 +201,7 @@ else
 fi
 
 crontab <<_EOF_
-${logrotate_croninterval} /usr/sbin/logrotate -v /opt/logrotate/logrotate.conf ${logrotate_cronlog}
+${logrotate_croninterval} /usr/sbin/logrotate /opt/logrotate/logrotate.conf ${logrotate_cronlog}
 _EOF_
 
 crontab -l
