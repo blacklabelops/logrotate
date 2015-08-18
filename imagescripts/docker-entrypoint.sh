@@ -168,6 +168,13 @@ do
         cat >> /opt/logrotate/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
+  ${logrotate_interval}
+  ${logrotate_size}
+  rotate ${logrotate_copies}
+  ${logrotate_logfile_compression}
+  copytruncate
+  delaycompress
+  notifempty
   missingok
 }
 _EOF_
