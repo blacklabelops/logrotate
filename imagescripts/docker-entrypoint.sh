@@ -210,7 +210,7 @@ else
 fi
 
 crontab <<_EOF_
-${logrotate_croninterval} /usr/sbin/logrotate /opt/logrotate/logrotate.conf ${logrotate_cronlog}
+${logrotate_croninterval} echo "Executing Logrotate" && /usr/sbin/logrotate /opt/logrotate/logrotate.conf ${logrotate_cronlog}
 _EOF_
 
 crontab -l
