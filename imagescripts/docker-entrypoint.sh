@@ -133,7 +133,6 @@ ${f} {
   ${logrotate_size}
   rotate ${logrotate_copies}
   ${logrotate_logfile_compression}
-  copytruncate
   delaycompress
   notifempty
   missingok
@@ -172,7 +171,6 @@ ${f} {
   ${logrotate_size}
   rotate ${logrotate_copies}
   ${logrotate_logfile_compression}
-  copytruncate
   delaycompress
   notifempty
   missingok
