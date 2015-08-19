@@ -43,9 +43,13 @@ if [ -n "${LOGROTATE_OLDDIR}" ]; then
 fi
 
 logrotate_logfile_compression="nocompress"
+logrotate_logfile_compression_delay=""
 
 if [ -n "${LOGROTATE_COMPRESSION}" ]; then
   logrotate_logfile_compression=${LOGROTATE_COMPRESSION}
+  if [ ! "${logrotate_logfile_compression}" = "nocompress" ]; then
+    logrotate_logfile_compression_delay="delaycompress"
+  fi
 fi
 
 logrotate_interval="daily"
@@ -133,7 +137,7 @@ ${f} {
   ${logrotate_size}
   rotate ${logrotate_copies}
   ${logrotate_logfile_compression}
-  delaycompress
+  ${logrotate_logfile_compression_delay}
   notifempty
   missingok
 }
@@ -171,7 +175,7 @@ ${f} {
   ${logrotate_size}
   rotate ${logrotate_copies}
   ${logrotate_logfile_compression}
-  delaycompress
+  ${logrotate_logfile_compression_delay}
   notifempty
   missingok
 }
