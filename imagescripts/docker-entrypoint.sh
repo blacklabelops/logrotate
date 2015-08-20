@@ -73,6 +73,9 @@ fi
 touch /opt/logrotate/logrotate.conf
 
 cat >> /opt/logrotate/logrotate.conf <<EOF
+# deactivate mail
+mail nomail
+
 # rotate log files
 ${logrotate_interval}
 
@@ -210,6 +213,7 @@ else
 fi
 
 crontab <<_EOF_
+MAILTO=""
 ${logrotate_croninterval} /usr/sbin/logrotate /opt/logrotate/logrotate.conf ${logrotate_cronlog}
 _EOF_
 
