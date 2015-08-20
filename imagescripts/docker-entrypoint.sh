@@ -26,8 +26,8 @@ function output()
 
 # Resetting the default configuration file for
 # repeated starts.
-if [ -f "/opt/logrotate/logrotate.conf" ]; then
-  rm -f /opt/logrotate/logrotate.conf
+if [ -f "/usr/bin/logrotate.d/logrotate.conf" ]; then
+  rm -f /usr/bin/logrotate.d/logrotate.conf
 fi
 
 if [ -n "${DELAYED_START}" ]; then
@@ -70,9 +70,9 @@ if [ -n "${LOGROTATE_SIZE}" ]; then
   logrotate_size="size "${LOGROTATE_SIZE}
 fi
 
-touch /opt/logrotate/logrotate.conf
+touch /usr/bin/logrotate.d/logrotate.conf
 
-cat >> /opt/logrotate/logrotate.conf <<EOF
+cat >> /usr/bin/logrotate.d/logrotate.conf <<EOF
 # deactivate mail
 mail nomail
 
@@ -133,7 +133,7 @@ do
       file_owner_user=$(stat -c %U ${f})
       file_owner_group=$(stat -c %G ${f})
       if [ "$file_owner_user" != "UNKNOWN" ] && [ "$file_owner_group" != "UNKNOWN" ]; then
-        cat >> /opt/logrotate/logrotate.conf <<_EOF_
+        cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
   ${logrotate_interval}
@@ -152,7 +152,7 @@ _EOF_
   done
 done
 
-cat /opt/logrotate/logrotate.conf
+cat /usr/bin/logrotate.d/logrotate.conf
 
 # ----- Take all Log in Subfolders ------
 
@@ -171,7 +171,7 @@ do
       file_owner_user=$(stat -c %U ${f})
       file_owner_group=$(stat -c %G ${f})
       if [ "$file_owner_user" != "UNKNOWN" ] && [ "$file_owner_group" != "UNKNOWN" ]; then
-        cat >> /opt/logrotate/logrotate.conf <<_EOF_
+        cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
   ${logrotate_interval}
@@ -190,7 +190,7 @@ _EOF_
   done
 done
 
-cat /opt/logrotate/logrotate.conf
+cat /usr/bin/logrotate.d/logrotate.conf
 
 # ----- Crontab Generation ------
 
@@ -214,7 +214,7 @@ fi
 
 crontab <<_EOF_
 MAILTO=""
-${logrotate_croninterval} /usr/sbin/logrotate /opt/logrotate/logrotate.conf ${logrotate_cronlog}
+${logrotate_croninterval} /usr/sbin/logrotate /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}
 _EOF_
 
 crontab -l
