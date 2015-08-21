@@ -136,6 +136,7 @@ do
         cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
+  copytruncate
   ${logrotate_interval}
   ${logrotate_size}
   rotate ${logrotate_copies}
@@ -174,6 +175,7 @@ do
         cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
 ${f} {
   su ${file_owner_user} ${file_owner_group}
+  copytruncate
   ${logrotate_interval}
   ${logrotate_size}
   rotate ${logrotate_copies}
