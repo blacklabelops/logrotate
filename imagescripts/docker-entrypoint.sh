@@ -216,7 +216,7 @@ fi
 
 crontab <<_EOF_
 MAILTO=""
-${logrotate_croninterval} /usr/sbin/logrotate /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}
+${logrotate_croninterval} /usr/sbin/logrotate -d -v /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}
 _EOF_
 
 crontab -l
