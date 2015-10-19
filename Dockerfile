@@ -1,5 +1,5 @@
 FROM blacklabelops/centos
-MAINTAINER Steffen Bleul <blacklabelops@itbleul.de>
+MAINTAINER Steffen Bleul <sbl@blacklabelops.com>
 
 # Propert permissions
 ENV CONTAINER_USER logrotate
@@ -14,10 +14,12 @@ RUN /usr/sbin/groupadd --gid $CONTAINER_GID $CONTAINER_GROUP && \
 RUN yum install -y \
     tar \
     gzip \
+    wget \
     vi \
-    cronie && \
     yum clean all && rm -rf /var/cache/yum/* && \
-    mkdir -p /usr/bin/logrotate.d
+    mkdir -p /usr/bin/logrotate.d && \
+    wget --no-check-certificate -O /tmp/go-cron.tar.gz https://github.com/michaloo/go-cron/releases/download/v0.0.2/go-cron.tar.gz && \
+    tar xvf /tmp/go-cron.tar.gz -C /usr/bin
 
 # environment variable for this container
 ENV LOGROTATE_OLDDIR=

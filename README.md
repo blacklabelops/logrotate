@@ -152,8 +152,7 @@ $ docker run -d \
 # Set the Output directory
 
 By default, logrotate will rotate logs in their respective directories. You can
-specify a directory for keeping old logfiles with the environment variable `LOGROTATE_OLDDIR`. You
-can specify a full or relative path.
+specify a directory for keeping old logfiles with the environment variable `LOGROTATE_OLDDIR`. You can specify a full or relative path.
 
 Example:
 
@@ -182,7 +181,7 @@ $ docker run -d \
 	-v /var/log/docker:/var/log/docker \
 	-e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_INTERVAL=hourly" \
-  -e "LOGROTATE_CRONSCHEDULE=* * * * *" \
+  -e "LOGROTATE_CRONSCHEDULE=* * * * * *" \
   blacklabelops/logrotate
 ~~~~
 
@@ -200,7 +199,7 @@ $ docker run -d \
 	-v $(pwd)/logs:/logs \
 	-e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_INTERVAL=hourly" \
-  -e "LOGROTATE_CRONSCHEDULE=* * * * *" \
+  -e "LOGROTATE_CRONSCHEDULE=* * * * * *" \
   -e "LOGROTATE_LOGFILE=/logs/logrotatecron.log" \
   blacklabelops/logrotate
 ~~~~
@@ -221,7 +220,7 @@ $ docker run -d \
 	-v $(pwd)/logs:/logs \
 	-e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_INTERVAL=hourly" \
-  -e "LOGROTATE_CRONSCHEDULE=* * * * *" \
+  -e "LOGROTATE_CRONSCHEDULE=* * * * * *" \
   -e "LOG_FILE=/logs/cron.log" \
   blacklabelops/logrotate
 ~~~~

@@ -206,20 +206,13 @@ else
   fi
 fi
 
-logrotate_croninterval=""
+logrotate_croninterval="* * * 1 * *"
 
 if [ -n "${LOGROTATE_CRONSCHEDULE}" ]; then
   logrotate_croninterval=${LOGROTATE_CRONSCHEDULE}
-else
-  logrotate_croninterval="@"${logrotate_interval}
 fi
 
-crontab <<_EOF_
-MAILTO=""
-${logrotate_croninterval} /usr/sbin/logrotate -d -v /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}
-_EOF_
-
-crontab -l
+logrotate_cron_timetable="/usr/sbin/logrotate -dv /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}"
 
 # ----- Cron Start ------
 
@@ -234,15 +227,8 @@ else
   fi
 fi
 
-cron_debug=""
-
-if [ -n "${CRON_DEBUG}" ]; then
-  cron_debug=" -x "${CRON_DEBUG}
-fi
-
 if [ "$1" = 'cron' ]; then
-  croncommand="crond -n "${cron_debug}${log_command}
-  bash -c "${croncommand}"
+  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "${logrotate_cron_timetable}" ${log_command}
 fi
 
 #-----------------------
