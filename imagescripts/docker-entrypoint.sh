@@ -220,8 +220,8 @@ cat /usr/bin/logrotate.d/logrotate.conf
 
 logrotate_cronlog=""
 
-if [ -n "${LOGROTATE_LOGFILE}" ] && [ ! -n "${SYSLOGGER}"]; then
-  logrotate_cronlog=" 2>&1 | tee -a "${logrotate_cronlogfile}${LOGROTATE_LOGFILE}
+if [ -n "${LOGROTATE_LOGFILE}" ] && [ -z "${SYSLOGGER}"]; then
+  logrotate_cronlog=" 2>&1 | tee -a "${LOGROTATE_LOGFILE}
 else
   if [ -n "${SYSLOGGER}" ]; then
     logrotate_cronlog=" 2>&1 | "${syslogger_command}
@@ -238,19 +238,8 @@ logrotate_cron_timetable="/usr/sbin/logrotate -dv /usr/bin/logrotate.d/logrotate
 
 # ----- Cron Start ------
 
-log_command=""
-
-if [ -n "${LOG_FILE}" ] && [ ! -n "${SYSLOGGER}"]; then
- log_command=" 2>&1 | tee -a "${LOG_FILE}
- touch ${LOG_FILE}
-else
-  if [ -n "${SYSLOGGER}" ]; then
-    log_command=" 2>&1 | "${syslogger_command}
-  fi
-fi
-
 if [ "$1" = 'cron' ]; then
-  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "${logrotate_cron_timetable}" ${log_command}
+  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "${logrotate_cron_timetable}"
 fi
 
 #-----------------------
