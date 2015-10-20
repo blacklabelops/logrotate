@@ -126,10 +126,18 @@ ${f} {
   su ${file_owner_user} ${file_owner_group}
   copytruncate
   rotate ${logrotate_copies}
-  ${logrotate_logfile_compression}
-  ${logrotate_logfile_compression_delay}
   missingok
 _EOF_
+        if [ -n "${logrotate_logfile_compression}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_logfile_compression}
+_EOF_
+        fi
+        if [ -n "${logrotate_logfile_compression_delay}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_logfile_compression_delay}
+_EOF_
+        fi
         if [ -n "${logrotate_interval}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   ${logrotate_interval}
@@ -174,10 +182,18 @@ ${f} {
   su ${file_owner_user} ${file_owner_group}
   copytruncate
   rotate ${logrotate_copies}
-  ${logrotate_logfile_compression}
-  ${logrotate_logfile_compression_delay}
   missingok
 _EOF_
+        if [ -n "${logrotate_logfile_compression}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_logfile_compression}
+_EOF_
+        fi
+        if [ -n "${logrotate_logfile_compression_delay}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_logfile_compression_delay}
+_EOF_
+        fi
         if [ -n "${logrotate_interval}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   ${logrotate_interval}
