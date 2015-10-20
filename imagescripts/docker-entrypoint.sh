@@ -76,18 +76,6 @@ cat >> /usr/bin/logrotate.d/logrotate.conf <<EOF
 # deactivate mail
 mail nomail
 
-# rotate log files
-${logrotate_interval}
-
-# keep backlogs x times
-rotate ${logrotate_copies}
-
-# maximum file size rotation?
-${logrotate_size}
-
-# log files compression?
-${logrotate_logfile_compression}
-
 # move the log files to another directory?
 ${logrotate_olddir}
 
@@ -137,13 +125,22 @@ do
 ${f} {
   su ${file_owner_user} ${file_owner_group}
   copytruncate
-  ${logrotate_interval}
-  ${logrotate_size}
   rotate ${logrotate_copies}
   ${logrotate_logfile_compression}
   ${logrotate_logfile_compression_delay}
-  notifempty
   missingok
+_EOF_
+        if [ -n "${logrotate_interval}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_interval}
+_EOF_
+        fi
+        if [ -n "${logrotate_size}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_size}
+_EOF_
+        fi
+        cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
 }
 _EOF_
       else
@@ -176,13 +173,22 @@ do
 ${f} {
   su ${file_owner_user} ${file_owner_group}
   copytruncate
-  ${logrotate_interval}
-  ${logrotate_size}
   rotate ${logrotate_copies}
   ${logrotate_logfile_compression}
   ${logrotate_logfile_compression_delay}
-  notifempty
   missingok
+_EOF_
+        if [ -n "${logrotate_interval}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_interval}
+_EOF_
+        fi
+        if [ -n "${logrotate_size}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_size}
+_EOF_
+        fi
+        cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
 }
 _EOF_
       else
