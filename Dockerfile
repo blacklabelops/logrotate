@@ -10,6 +10,8 @@ ENV CONTAINER_GID 1000
 RUN /usr/sbin/groupadd --gid $CONTAINER_GID $CONTAINER_GROUP && \
     /usr/sbin/useradd --uid $CONTAINER_UID --gid $CONTAINER_GID --create-home --home-dir /usr/bin/logrotate.d --shell /bin/bash $CONTAINER_GROUP
 
+ENV VOLUME_DIRECTORY=/logrotate-status
+
 # install dev tools
 RUN yum install -y \
     tar \
@@ -18,6 +20,10 @@ RUN yum install -y \
     vi \
     yum clean all && rm -rf /var/cache/yum/* && \
     mkdir -p /usr/bin/logrotate.d && \
+    mkdir -p /logrotate-status && \
+    touch /logrotate-status/logrotate.status && \
+    rm -rf /var/lib/logrotate.status && \
+    ln -s /logrotate-status/logrotate.status /var/lib/logrotate.status && \
     wget --no-check-certificate -O /tmp/go-cron.tar.gz https://github.com/michaloo/go-cron/releases/download/v0.0.2/go-cron.tar.gz && \
     tar xvf /tmp/go-cron.tar.gz -C /usr/bin
 
@@ -35,4 +41,5 @@ ENV LOG_FILE=
 
 COPY imagescripts/docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/logrotate.d/docker-entrypoint.sh"]
+VOLUME ["${VOLUME_DIRECTORY}"]
 CMD ["cron"]

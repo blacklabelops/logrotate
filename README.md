@@ -72,6 +72,29 @@ $ docker run -d \
 
 > Crawls for file endings .json and .xml.
 
+# Set the Log interval
+
+Logrotate can rotate logfile according to the following intervals:
+
+* `hourly`
+* `daily`
+* `weekly`
+* `monthly`
+* `yearly`
+
+You can override the default setting with the environment variable `LOGROTATE_INTERVAL`.
+
+Example:
+
+~~~~
+$ docker run -d \
+	-v /var/lib/docker/containers:/var/lib/docker/containers \
+	-v /var/log/docker:/var/log/docker \
+	-e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_INTERVAL=hourly" \
+  blacklabelops/logrotate
+~~~~
+
 # Set the Number of Rotations
 
 The default number of rotations is five. Further rotations will delete old logfiles. You

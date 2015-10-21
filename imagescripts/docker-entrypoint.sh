@@ -52,6 +52,12 @@ if [ -n "${LOGROTATE_COMPRESSION}" ]; then
   fi
 fi
 
+logrotate_interval=""
+
+if [ -n "${LOGROTATE_INTERVAL}" ]; then
+  logrotate_interval=${LOGROTATE_INTERVAL}
+fi
+
 logrotate_copies="5"
 
 if [ -n "${LOGROTATE_COPIES}" ]; then
@@ -132,6 +138,11 @@ _EOF_
   ${logrotate_logfile_compression_delay}
 _EOF_
         fi
+        if [ -n "${logrotate_interval}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_interval}
+_EOF_
+        fi
         if [ -n "${logrotate_size}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   ${logrotate_size}
@@ -181,6 +192,11 @@ _EOF_
         if [ -n "${logrotate_logfile_compression_delay}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   ${logrotate_logfile_compression_delay}
+_EOF_
+        fi
+        if [ -n "${logrotate_interval}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_interval}
 _EOF_
         fi
         if [ -n "${logrotate_size}" ]; then
