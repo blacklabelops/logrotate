@@ -234,7 +234,7 @@ if [ -n "${LOGROTATE_CRONSCHEDULE}" ]; then
   logrotate_croninterval=${LOGROTATE_CRONSCHEDULE}
 fi
 
-logrotate_cron_timetable="/usr/sbin/logrotate -dv /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}"
+logrotate_cron_timetable="/usr/sbin/logrotate -v /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}"
 
 # ----- Cron Start ------
 
