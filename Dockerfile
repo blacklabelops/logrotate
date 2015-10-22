@@ -10,6 +10,8 @@ ENV CONTAINER_GID 1000
 RUN /usr/sbin/groupadd --gid $CONTAINER_GID $CONTAINER_GROUP && \
     /usr/sbin/useradd --uid $CONTAINER_UID --gid $CONTAINER_GID --create-home --home-dir /usr/bin/logrotate.d --shell /bin/bash $CONTAINER_GROUP
 
+ENV VOLUME_DIRECTORY=/logrotate-status
+
 # install dev tools
 RUN yum install -y \
     tar \
@@ -35,4 +37,5 @@ ENV LOG_FILE=
 
 COPY imagescripts/docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/logrotate.d/docker-entrypoint.sh"]
+VOLUME ["${VOLUME_DIRECTORY}"]
 CMD ["cron"]
