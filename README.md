@@ -206,6 +206,31 @@ $ docker run -d \
 
 > You will be able to see logrotate output every minute in file logs/logrotatecron.log
 
+# Logrotate Commandline Parameters
+
+You can define the logrotate commandline parameters with the environment variable LOGROTATE_PARAMETERS, e.g.:
+
+*v*: Verbose
+
+*d*: Debug, Logrotate will be emulated but never executed!
+
+*f*: Force
+
+Example for a typical testrun:
+
+~~~~
+$ docker run -d \
+	-v /var/lib/docker/containers:/var/lib/docker/containers \
+	-v /var/log/docker:/var/log/docker \
+	-v $(pwd)/logs:/logs \
+	-e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_PARAMETERS=vdf" \
+  -e "LOG_FILE=/logs/cron.log" \
+  blacklabelops/logrotate
+~~~~
+
+> Will run logrotate with: /usr/bin/logrotate -dvf
+
 # Log and View the Cron Output
 
 You can specify a separate logfile for cron. The file

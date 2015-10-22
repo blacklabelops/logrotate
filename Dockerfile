@@ -33,6 +33,7 @@ ENV LOGS_DIRECTORIES=
 ENV LOG_FILE_ENDINGS=
 ENV LOGROTATE_LOGFILE=
 ENV LOGROTATE_CRONSCHEDULE=
+ENV LOGROTATE_PARAMETERS=
 ENV LOG_FILE=
 
 COPY imagescripts/docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh

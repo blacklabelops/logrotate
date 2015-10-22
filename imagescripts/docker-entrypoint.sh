@@ -218,6 +218,12 @@ cat /usr/bin/logrotate.d/logrotate.conf
 
 # ----- Crontab Generation ------
 
+logrotate_parameters=""
+
+if [ -n "${LOGROTATE_PARAMETERS}" ]; then
+  logrotate_parameters="-"${LOGROTATE_PARAMETERS}
+fi
+
 logrotate_cronlog=""
 
 if [ -n "${LOGROTATE_LOGFILE}" ] && [ -z "${SYSLOGGER}"]; then
@@ -234,7 +240,7 @@ if [ -n "${LOGROTATE_CRONSCHEDULE}" ]; then
   logrotate_croninterval=${LOGROTATE_CRONSCHEDULE}
 fi
 
-logrotate_cron_timetable="/usr/sbin/logrotate -v /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}"
+logrotate_cron_timetable="/usr/sbin/logrotate ${logrotate_parameters} /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}"
 
 # ----- Cron Start ------
 
