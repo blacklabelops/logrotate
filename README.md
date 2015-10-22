@@ -208,7 +208,7 @@ $ docker run -d \
 
 # Logrotate Commandline Parameters
 
-You can define the logrotate commandline parameters with the environment variable LOGROTATE_PARAMETERS, e.g.:
+You can define the logrotate commandline parameters with the environment variable LOGROTATE_PARAMETERS.
 
 *v*: Verbose
 
@@ -230,6 +230,24 @@ $ docker run -d \
 ~~~~
 
 > Will run logrotate with: /usr/bin/logrotate -dvf
+
+# Logrotate Status File
+
+Logrotate must remember when files have been rotated when using time intervals, e.g. 'daily'. The status file will be written by default to the container volume but you can specify a custom location with the environment variable LOGROTATE_STATUSFILE.
+
+Example:
+
+~~~~
+$ docker run -d \
+  -e "LOGROTATE_INTERVAL=hourly" \
+  -e "LOGROTATE_CRONSCHEDULE=0 * * * * *" \
+  -e "LOGROTATE_STATUSFILE=/logrotate-status/logrotate.status" \
+	-e "ALL_LOGS_DIRECTORIES=/var/log" \
+	-e "LOGROTATE_PARAMETERS=vf" \
+  blacklabelops/logrotate
+~~~~
+
+> Writes the latest status file each logrotation. Reads status files at each start.
 
 # Log and View the Cron Output
 

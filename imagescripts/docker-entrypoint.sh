@@ -24,6 +24,20 @@ function output()
   echo "$@"
 }
 
+# Logrotate status file handling
+
+logrotate_logstatus="${VOLUME_DIRECTORY}/logrotate.status"
+
+if [ -n "${LOGROTATE_STATUSFILE}" ]; then
+  logrotate_logstatus=${LOGROTATE_STATUSFILE}
+fi
+
+if [ -f "${logrotate_logstatus}" ]; then
+  cp -f ${logrotate_logstatus} /var/lib/logrotate.status
+else
+  cp -f /var/lib/logrotate.status ${logrotate_logstatus}
+fi
+
 # Resetting the default configuration file for
 # repeated starts.
 if [ -f "/usr/bin/logrotate.d/logrotate.conf" ]; then
@@ -240,7 +254,7 @@ if [ -n "${LOGROTATE_CRONSCHEDULE}" ]; then
   logrotate_croninterval=${LOGROTATE_CRONSCHEDULE}
 fi
 
-logrotate_cron_timetable="/usr/sbin/logrotate ${logrotate_parameters} /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog}"
+logrotate_cron_timetable="/usr/sbin/logrotate ${logrotate_parameters} /usr/bin/logrotate.d/logrotate.conf ${logrotate_cronlog} && cp -f /var/lib/logrotate.status ${logrotate_logstatus}"
 
 # ----- Cron Start ------
 
