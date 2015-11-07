@@ -1,8 +1,8 @@
-This project for long running or productive Docker and Docker Container instances. Containers need a mechanism for managing logfiles. Otherwise your disk space will swapped full by logfiles and you lose your instance.
-
 This container can crawl for logfiles and rotate them. It is a side-car container
 for containers that write logfiles and need a log rotation mechanism. Just hook up some containers and define your
 backup volumes.
+
+Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](https://www.hipchat.com/geogBFvEM)
 
 # Make It Short
 
