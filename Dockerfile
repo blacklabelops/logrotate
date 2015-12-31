@@ -1,4 +1,4 @@
-FROM blacklabelops/centos:7.2.1511
+FROM blacklabelops/centos
 MAINTAINER Steffen Bleul <sbl@blacklabelops.com>
 
 # Propert permissions
@@ -18,7 +18,7 @@ RUN yum install -y \
     gzip \
     wget \
     vi \
-    logrotate-3.8.6 && \
+    logrotate && \
     yum clean all && rm -rf /var/cache/yum/* && \
     mkdir -p /usr/bin/logrotate.d && \
     wget --no-check-certificate -O /tmp/go-cron.tar.gz https://github.com/michaloo/go-cron/releases/download/v0.0.2/go-cron.tar.gz && \
