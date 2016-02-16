@@ -6,8 +6,6 @@ This container can crawl for logfiles and rotate them. It is a side-car containe
 for containers that write logfiles and need a log rotation mechanism. Just hook up some containers and define your
 backup volumes.
 
-Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](https://www.hipchat.com/geogBFvEM)
-
 # Make It Short
 
 In short, this container can rotate all your Docker logfiles just by typing:
@@ -295,6 +293,10 @@ First install:
 
 * [Vagrant](https://www.vagrantup.com/)
 * [Virtualbox](https://www.virtualbox.org/)
+
+## Support & Feature Requests
+
+Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](https://www.hipchat.com/geogBFvEM)
 
 ## References
 
