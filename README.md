@@ -1,3 +1,7 @@
+# Dockerized Logrotate
+
+[![Docker Stars](https://img.shields.io/docker/stars/blacklabelops/logrotate.svg)](https://hub.docker.com/r/blacklabelops/logrotate/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacklabelops/logrotate.svg)](https://hub.docker.com/r/blacklabelops/logrotate/) [![](https://badge.imagelayers.io/blacklabelops/logrotate:latest.svg)](https://imagelayers.io/?images=blacklabelops/logrotate:latest 'Get your own badge on imagelayers.io')
+
 This container can crawl for logfiles and rotate them. It is a side-car container
 for containers that write logfiles and need a log rotation mechanism. Just hook up some containers and define your
 backup volumes.
