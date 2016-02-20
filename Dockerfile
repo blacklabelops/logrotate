@@ -10,8 +10,8 @@ ARG CONTAINER_GID=1000
 # install dev tools
 RUN export CONTAINER_USER=logrotate && \
     export CONTAINER_GROUP=logrotate && \
-    addgroup -g $CONTAINER_GID jenkins && \
-    adduser -u $CONTAINER_UID -G jenkins -h /usr/bin/logrotate.d -s /bin/bash -S jenkins && \
+    addgroup -g $CONTAINER_GID logrotate && \
+    adduser -u $CONTAINER_UID -G logrotate -h /usr/bin/logrotate.d -s /bin/bash -S logrotate && \
     apk add --update \
       tar \
       gzip \
