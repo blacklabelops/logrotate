@@ -1,4 +1,4 @@
-FROM blacklabelops/alpine
+FROM blacklabelops/alpine:3.4
 MAINTAINER Steffen Bleul <sbl@blacklabelops.com>
 
 # logrotate version (e.g. 3.9.1-r0)
