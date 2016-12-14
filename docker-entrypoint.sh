@@ -242,7 +242,7 @@ else
   fi
 fi
 
-logrotate_croninterval="1 0 0 0 * *"
+logrotate_croninterval="1 0 0 * * *"
 
 if [ -n "${LOGROTATE_CRONSCHEDULE}" ]; then
   logrotate_croninterval=${LOGROTATE_CRONSCHEDULE}
