@@ -294,11 +294,11 @@ First install:
 * [Vagrant](https://www.vagrantup.com/)
 * [Virtualbox](https://www.virtualbox.org/)
 
-## Support & Feature Requests
+# Support
 
-Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](https://www.hipchat.com/geogBFvEM)
+Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](http://support.blacklabelops.com)
 
-## References
+# References
 
 * [Logrotate](http://www.linuxcommand.org/man_pages/logrotate8.html)
 * [Docker Homepage](https://www.docker.com/)
