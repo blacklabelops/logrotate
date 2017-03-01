@@ -273,6 +273,26 @@ $ docker run -d \
 > You will be able to see cron output every minute in file logs/cron.log
 
 
+# Setting a Date Extension
+
+With Logrotate it is possible to split files and name them by the date they were generated when used with `LOGROTATE_CRONSCHEDULE`. By setting `LOGROTATE_DATEFORMAT` you will enable the Logrotate `dateext` option.
+
+The default Logrotate format is `-%Y%m%d`, to enable the defaults `LOGROTATE_DATEFORMAT` should be set to this.
+
+Example:
+
+~~~~
+$ docker run -d \
+  -v /var/lib/docker/containers:/var/lib/docker/containers \
+  -v /var/log/docker:/var/log/docker \
+  -e "LOGROTATE_INTERVAL=daily" \
+  -e "LOGROTATE_CRONSCHEDULE=0 * * * * *" \
+  -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_DATEFORMAT=-%Y%m%d" \
+  blacklabelops/logrotate
+~~~~
+
+
 ## Vagrant
 
 Vagrant is fabulous tool for pulling and spinning up virtual machines like docker with containers. I can configure my development and test environment and simply pull it online. And so can you! Install Vagrant and Virtualbox and spin it up. Change into the project folder and build the project on the spot!
