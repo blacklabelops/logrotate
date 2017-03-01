@@ -156,9 +156,10 @@ _EOF_
   ${logrotate_size}
 _EOF_
         fi
-        if [ -n "${LOGROTATE_DATEEXT}" ]; then
+        if [ -n "${LOGROTATE_DATEFORMAT}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   dateext
+  dateformat ${LOGROTATE_DATEFORMAT}
 _EOF_
         fi
         cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
@@ -217,9 +218,10 @@ _EOF_
   ${logrotate_size}
 _EOF_
         fi
-        if [ -n "${LOGROTATE_DATEEXT}" ]; then
+        if [ -n "${LOGROTATE_DATEFORMAT}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   dateext
+  dateformat ${LOGROTATE_DATEFORMAT}
 _EOF_
         fi
         cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
