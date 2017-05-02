@@ -265,7 +265,7 @@ logrotate_cron_timetable="/usr/sbin/logrotate ${logrotate_parameters} --state=${
 # ----- Cron Start ------
 
 if [ "$1" = 'cron' ]; then
-  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "${logrotate_cron_timetable}"
+  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "/usr/bin/logrotate.d/update-logrotate.sh; ${logrotate_cron_timetable}"
 fi
 
 #-----------------------

@@ -42,6 +42,8 @@ ENV LOGROTATE_OLDDIR= \
     LOG_FILE=
 
 COPY docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh
+COPY update-logrotate.sh /usr/bin/logrotate.d/update-logrotate.sh
+
 ENTRYPOINT ["/usr/bin/logrotate.d/docker-entrypoint.sh"]
 VOLUME ["/logrotate-status"]
 CMD ["cron"]
