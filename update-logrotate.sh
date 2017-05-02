@@ -71,7 +71,7 @@ function insertInOrder()
 
   if [[ $line -lt `cat $file | wc -l` ]]; then
     new_config=$(awk -v n=$line -v config="$config" 'NR == n {print config} {print}' $file)
-    echo "$new_config" | $file > /dev/null
+    echo "$new_config" | tee $file > /dev/null
   else
     echo -e "$config" | tee -a $file > /dev/null
   fi
@@ -221,7 +221,7 @@ do
           new_log="${new_log}\n}"
           echo "Inserting new ${f} in alphabetic order to /usr/bin/logratate.d/logrotate.conf"
 
-          insertInOrder $new_log $log_files /usr/bin/logrotate.d/logrotate.conf $last_line_no $d ${_i}
+          insertInOrder "$new_log" "$log_files" /usr/bin/logrotate.d/logrotate.conf $last_line_no $d ${_i}
         else
           output "File has unknown user or group: ${f}, user: ${file_owner_user}, group: ${file_owner_group}"
         fi
@@ -297,7 +297,7 @@ do
           new_log="${new_log}\n}"
           echo "Inserting new ${f} in alphabetic order to /usr/bin/logratate.d/logrotate.conf"
 
-          insertInOrder $new_log $log_files /usr/bin/logrotate.d/logrotate.conf $last_line_no $d ${_i}
+          insertInOrder "$new_log" "$log_files" /usr/bin/logrotate.d/logrotate.conf $last_line_no $d ${_i}
         else
           output "File has unknown user or group: ${f}, user: ${file_owner_user}, group: ${file_owner_group}"
         fi
