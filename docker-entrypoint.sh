@@ -78,6 +78,12 @@ if [ -n "${LOGROTATE_SIZE}" ]; then
   logrotate_size="size "${LOGROTATE_SIZE}
 fi
 
+logrotate_autoupdate=true
+
+if [ -n "${LOGROTATE_AUTOUPDATE}" ]; then
+  logrotate_autoupdate="$(echo ${LOGROTATE_AUTOUPDATE,,})"
+fi
+
 touch /usr/bin/logrotate.d/logrotate.conf
 
 cat >> /usr/bin/logrotate.d/logrotate.conf <<EOF
@@ -265,7 +271,12 @@ logrotate_cron_timetable="/usr/sbin/logrotate ${logrotate_parameters} --state=${
 # ----- Cron Start ------
 
 if [ "$1" = 'cron' ]; then
-  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "/usr/bin/logrotate.d/update-logrotate.sh; ${logrotate_cron_timetable}"
+  if [ ${logrotate_autoupdate} = "true" ]; then
+    /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "/usr/bin/logrotate.d/update-logrotate.sh; ${logrotate_cron_timetable}"
+    exit
+  fi
+
+  /usr/bin/go-cron "${logrotate_croninterval}" /bin/bash -c "${logrotate_cron_timetable}"
 fi
 
 #-----------------------
