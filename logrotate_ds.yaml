@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: logrotate
+spec:
+  template:
+    metadata:
+      labels:
+        app: logging
+        id: logrotate
+      name: logrotate
+    spec:
+      containers:
+      - name: logrotate-es
+        image: blacklabelops/logrotate
+        securityContext:
+          privileged: true
+        volumeMounts:
+         - name: containers
+           mountPath: /var/lib/docker/containers
+         - name: varlog
+           mountPath: /var/log/docker
+         - name: logs
+           mountPath: /logs
+        env:
+        - name: LOGS_DIRECTORIES
+          value: "/var/lib/docker/containers /var/log/docker"
+        - name: LOGROTATE_INTERVAL
+          value: "hourly"
+        - name: LOGROTATE_OLDDIR
+          value: "/logs"
+      volumes:
+         - hostPath:
+             path: /var/lib/docker/containers
+           name: containers
+         - hostPath:
+             path: /var/log/docker
+           name: varlog
+         - hostPath:
+             path: /var/log/containers/
+           name: logs  
