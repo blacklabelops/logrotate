@@ -114,7 +114,7 @@ if [ ! -f /usr/bin/logrotate.d/logrotate.conf ]; then
 
   cat >> /usr/bin/logrotate.d/logrotate.conf <<EOF
 # deactivate mail
-mail nomail
+nomail
 
 # move the log files to another directory?
 ${logrotate_olddir}
