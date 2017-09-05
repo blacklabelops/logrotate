@@ -4,6 +4,10 @@
 
 set -e
 
+# create user and group
+addgroup -g $CONTAINER_GID logrotate
+adduser -u $CONTAINER_UID -G logrotate -h /usr/bin/logrotate.d -s /bin/bash -S logrotate
+
 syslogger_tag=""
 
 if [ -n "${SYSLOGGER_TAG}" ]; then
