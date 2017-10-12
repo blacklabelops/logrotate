@@ -28,21 +28,13 @@ RUN export CONTAINER_USER=logrotate && \
     rm -rf /var/cache/apk/* && rm -rf /tmp/*
 
 # environment variable for this container
-ENV LOGROTATE_OLDDIR= \
-    LOGROTATE_COMPRESSION= \
-    LOGROTATE_INTERVAL= \
-    LOGROTATE_COPIES= \
-    LOGROTATE_SIZE= \
-    LOGS_DIRECTORIES= \
-    LOG_FILE_ENDINGS= \
-    LOGROTATE_LOGFILE= \
-    LOGROTATE_CRONSCHEDULE= \
+ENV LOGROTATE_CRONSCHEDULE= \
     LOGROTATE_PARAMETERS= \
     LOGROTATE_STATUSFILE= \
     LOG_FILE=
 
 COPY docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh
-COPY update-logrotate.sh /usr/bin/logrotate.d/update-logrotate.sh
+COPY logrotate.conf /usr/bin/logrotate.d/logrotate.conf
 
 ENTRYPOINT ["/usr/bin/logrotate.d/docker-entrypoint.sh"]
 VOLUME ["/logrotate-status"]
