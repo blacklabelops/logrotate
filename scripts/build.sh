@@ -56,7 +56,9 @@ fi
 printf '%b\n' ""
 printf '%b\n' ":: Building image..."
 
-docker build -t ${IMAGE_NAME} .
+docker build -t ${IMAGE_NAME} \
+  --build-arg CONTAINER_UID=${CONTAINER_UID} \
+  --build-arg CONTAINER_GID=${CONTAINER_GID} .
 
 found=$(lookForImage)
 if [ $found = "false" ]; then
