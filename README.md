@@ -272,7 +272,6 @@ $ docker run -d \
 
 > You will be able to see cron output every minute in file logs/cron.log
 
-
 # Setting a Date Extension
 
 With Logrotate it is possible to split files and name them by the date they were generated when used with `LOGROTATE_CRONSCHEDULE`. By setting `LOGROTATE_DATEFORMAT` you will enable the Logrotate `dateext` option.
@@ -309,9 +308,26 @@ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
+# Set Time Zone
+
+With Logrotate by default it logrotate logs in `UTC` time zone. It is possible to set time zone when used with `TZ`. By setting `TZ` (to a valid time zone) it will logrotate logs in the specified time zone.
+
+The default `TZ` is `""`, to set to different time zone. E.g `Australia/Melbourne`.
+
+Example:
+
+~~~~
+docker run -d \
+  -v /var/lib/docker/containers:/var/lib/docker/containers \
+  -v /var/log/docker:/var/log/docker \
+  -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "TZ=Australia/Melbourne" \
+  blacklabelops/logrotate
+~~~~
+
 ## Used in Kubernetes
 
-When we run container in Kubernetes, we can use the logrotate container to rotate the logs. As we create 
+When we run container in Kubernetes, we can use the logrotate container to rotate the logs. As we create
 
 an DaemonSet in cluster ,we can deploy an logrotate container in every nodes of the cluster.
 

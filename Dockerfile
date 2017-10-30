@@ -15,7 +15,8 @@ RUN export CONTAINER_USER=logrotate && \
     apk add --update \
       tar \
       gzip \
-      wget && \
+      wget \
+      tzdata && \
     if  [ "${LOGROTATE_VERSION}" = "latest" ]; \
       then apk add logrotate ; \
       else apk add "logrotate=${LOGROTATE_VERSION}" ; \
