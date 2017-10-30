@@ -56,6 +56,8 @@ $ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
+> This will logrotate any logfile(s) under /var/lib/docker/containers, /var/log/docker (or subdirectories of them).
+
 # Customize Log File Ending
 
 You can define the file endings fluentd will attach to. The container will by default crawl for
@@ -97,6 +99,8 @@ $ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
+> This will logrotate logfile(s) on hourly basis.
+
 # Set the Number of Rotations
 
 The default number of rotations is five. Further rotations will delete old logfiles. You
@@ -135,6 +139,8 @@ $ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
+> This will logrotate when logfile(s) reaches 10M+.
+
 # Set Log File compression
 
 The default logrotate setting is `nocompress`. In order to enable logfile compression
@@ -150,6 +156,8 @@ $ docker run -d \
   -e "LOGROTATE_COMPRESSION=compress" \
   blacklabelops/logrotate
 ~~~~
+
+> This will compress the logrotated logs.
 
 # Set the Output directory
 
@@ -187,6 +195,8 @@ $ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
+> This will logrotate on go-cron schedule "* * * * * *" (every second).
+
 # Log and View the Logrotate Output
 
 You can specify a logfile for the periodical logrotate execution. The file
@@ -206,7 +216,7 @@ $ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
-> You will be able to see logrotate output every minute in file logs/logrotatecron.log
+> You will be able to see logrotate output every minute in file logs/logrotatecron.log.
 
 # Logrotate Commandline Parameters
 
@@ -270,11 +280,11 @@ $ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
-> You will be able to see cron output every minute in file logs/cron.log
+> You will be able to see cron output every minute in file logs/cron.log.
 
 # Setting a Date Extension
 
-With Logrotate it is possible to split files and name them by the date they were generated when used with `LOGROTATE_CRONSCHEDULE`. By setting `LOGROTATE_DATEFORMAT` you will enable the Logrotate `dateext` option.
+With Logrotate it is possible to split files and name them by the date they were generated when used with `LOGROTATE_DATEFORMAT`. By setting `LOGROTATE_DATEFORMAT` you will enable the Logrotate `dateext` option.
 
 The default Logrotate format is `-%Y%m%d`, to enable the defaults `LOGROTATE_DATEFORMAT` should be set to this.
 
@@ -290,6 +300,8 @@ $ docker run -d \
   -e "LOGROTATE_DATEFORMAT=-%Y%m%d" \
   blacklabelops/logrotate
 ~~~~
+
+> This will set logrotate to split files and name them by date format -%Y%m%d.
 
 # Disable Auto Update
 
@@ -308,6 +320,8 @@ docker run -d \
   blacklabelops/logrotate
 ~~~~
 
+> This will disable logrotate configuration file update (when logrotate action is triggering).
+
 # Set Time Zone
 
 With Logrotate by default it logrotate logs in `UTC` time zone. It is possible to set time zone when used with `TZ`. By setting `TZ` (to a valid time zone) it will logrotate logs in the specified time zone.
@@ -324,6 +338,8 @@ docker run -d \
   -e "TZ=Australia/Melbourne" \
   blacklabelops/logrotate
 ~~~~
+
+> This will logrotate in Australia/Melbourne time zone.
 
 ## Used in Kubernetes
 
