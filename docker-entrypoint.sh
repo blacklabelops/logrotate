@@ -75,7 +75,13 @@ fi
 logrotate_size=""
 
 if [ -n "${LOGROTATE_SIZE}" ]; then
-  logrotate_size="size "${LOGROTATE_SIZE}
+  logrotate_size="size ${LOGROTATE_SIZE}"
+fi
+
+logrotate_minsize=""
+
+if [ -n "${LOGROTATE_MINSIZE}" ]; then
+  logrotate_minsize = "minsize ${LOGROTATE_MINSIZE}"
 fi
 
 logrotate_autoupdate=true
@@ -83,6 +89,14 @@ logrotate_autoupdate=true
 if [ -n "${LOGROTATE_AUTOUPDATE}" ]; then
   logrotate_autoupdate="$(echo ${LOGROTATE_AUTOUPDATE,,})"
 fi
+
+logrotate_maxage=""
+
+if [ -n "${LOGROTATE_MAXAGE}" ]; then
+  logrotate_maxage="maxage ${LOGROTATE_MAXAGE}"
+fi
+
+
 
 touch /usr/bin/logrotate.d/logrotate.conf
 
@@ -162,10 +176,20 @@ _EOF_
   ${logrotate_size}
 _EOF_
         fi
+        if [ -n "${logrotate_minsize}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_minsize}
+_EOF_
+        fi
         if [ -n "${LOGROTATE_DATEFORMAT}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   dateext
   dateformat ${LOGROTATE_DATEFORMAT}
+_EOF_
+        fi
+        if [ -n "${logrotate_maxage}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_maxage}
 _EOF_
         fi
         cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
@@ -224,10 +248,20 @@ _EOF_
   ${logrotate_size}
 _EOF_
         fi
+        if [ -n "${logrotate_minsize}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_minsize}
+_EOF_
+        fi
         if [ -n "${LOGROTATE_DATEFORMAT}" ]; then
           cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
   dateext
   dateformat ${LOGROTATE_DATEFORMAT}
+_EOF_
+        fi
+        if [ -n "${logrotate_maxage}" ]; then
+          cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
+  ${logrotate_maxage}
 _EOF_
         fi
         cat >> /usr/bin/logrotate.d/logrotate.conf <<_EOF_
