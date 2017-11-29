@@ -81,7 +81,7 @@ fi
 logrotate_minsize=""
 
 if [ -n "${LOGROTATE_MINSIZE}" ]; then
-  logrotate_minsize = "minsize ${LOGROTATE_MINSIZE}"
+  logrotate_minsize="minsize ${LOGROTATE_MINSIZE}"
 fi
 
 logrotate_autoupdate=true
