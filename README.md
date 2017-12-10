@@ -1,12 +1,19 @@
 # Dockerized Logrotate
 
+[![Open Issues](https://img.shields.io/github/issues/blacklabelops/logrotate.svg)](https://github.com/blacklabelops/logrotate/issues) [![Stars on GitHub](https://img.shields.io/github/stars/blacklabelops/logrotate.svg)](https://github.com/blacklabelops/logrotate/stargazers)
 [![Docker Stars](https://img.shields.io/docker/stars/blacklabelops/logrotate.svg)](https://hub.docker.com/r/blacklabelops/logrotate/) [![Docker Pulls](https://img.shields.io/docker/pulls/blacklabelops/logrotate.svg)](https://hub.docker.com/r/blacklabelops/logrotate/) [![](https://badge.imagelayers.io/blacklabelops/logrotate:latest.svg)](https://imagelayers.io/?images=blacklabelops/logrotate:latest 'Get your own badge on imagelayers.io')
 
 This container can crawl for logfiles and rotate them. It is a side-car container
 for containers that write logfiles and need a log rotation mechanism. Just hook up some containers and define your
 backup volumes.
 
-# Make It Short
+## Supported tags and respective Dockerfile links
+
+| Distribution | Version      | Tag          | Dockerfile |
+|--------------|--------------|--------------|------------|
+| Logrotate Alpine | latest, 1.2 | latest, 1.2 | [Dockerfile](https://github.com/blacklabelops/logrotate/blob/master/Dockerfile) |
+
+## Make It Short
 
 In short, this container can rotate all your Docker logfiles just by typing:
 
@@ -33,7 +40,7 @@ $ docker run -d \
 
 > This will put logrotate on an hourly schedule.
 
-# How To Attach to Logs
+## How To Attach to Logs
 
 In order to attach the side-car container to your logs you have to hook your log file folders inside volumes. Afterwards
 specify the folders logrotate should crawl for log files. The container attaches by default to any file ending with **.log** inside the specified folders.
@@ -58,7 +65,7 @@ $ docker run -d \
 
 > This will logrotate any logfile(s) under /var/lib/docker/containers, /var/log/docker (or subdirectories of them).
 
-# Customize Log File Ending
+## Customize Log File Ending
 
 You can define the file endings fluentd will attach to. The container will by default crawl for
 files ending with **.log**. This can be overriden and extended to any amount of file endings.
@@ -76,7 +83,7 @@ $ docker run -d \
 
 > Crawls for file endings .json and .xml.
 
-# Set the Log interval
+## Set the Log interval
 
 Logrotate can rotate logfile according to the following intervals:
 
@@ -101,7 +108,7 @@ $ docker run -d \
 
 > This will logrotate logfile(s) on hourly basis.
 
-# Set the Number of Rotations
+## Set the Number of Rotations
 
 The default number of rotations is five. Further rotations will delete old logfiles. You
 can override the default setting with the environment variable `LOGROTATE_COPIES`.
@@ -119,7 +126,7 @@ $ docker run -d \
 
 > Will create 10 daily logs before deleting old logs.
 
-# Set Maximum File size
+## Set Maximum File size
 
 Logrotate can do additional rotates, when the logfile exceeds a certain file size. You can specifiy file size rotation
 with the environment variable `LOGROTATE_SIZE`.
@@ -141,7 +148,7 @@ $ docker run -d \
 
 > This will logrotate when logfile(s) reaches 10M+.
 
-# Set Log File compression
+## Set Log File compression
 
 The default logrotate setting is `nocompress`. In order to enable logfile compression
 you can set the environment variable `LOGROTATE_COMPRESSION` to `compress`.
@@ -159,7 +166,7 @@ $ docker run -d \
 
 > This will compress the logrotated logs.
 
-# Set the Output directory
+## Set the Output directory
 
 By default, logrotate will rotate logs in their respective directories. You can
 specify a directory for keeping old logfiles with the environment variable `LOGROTATE_OLDDIR`. You can specify a full or relative path.
@@ -178,7 +185,7 @@ $ docker run -d \
 
 > Will move old logfiles in the local directory logs/.
 
-# Set the Cron Schedule
+## Set the Cron Schedule
 
 You can set the cron schedule independently of the logrotate interval. You can override
 the default schedule with the enviroment variable `LOGROTATE_CRONSCHEDULE`.
@@ -197,7 +204,7 @@ $ docker run -d \
 
 > This will logrotate on go-cron schedule \* \* \* \* \* \* (every second).
 
-# Log and View the Logrotate Output
+## Log and View the Logrotate Output
 
 You can specify a logfile for the periodical logrotate execution. The file
 is specified using the environment variable `LOGROTATE_LOGFILE`. Must be a full path!
@@ -218,7 +225,7 @@ $ docker run -d \
 
 > You will be able to see logrotate output every minute in file logs/logrotatecron.log.
 
-# Logrotate Commandline Parameters
+## Logrotate Commandline Parameters
 
 You can define the logrotate commandline parameters with the environment variable LOGROTATE_PARAMETERS.
 
@@ -243,7 +250,7 @@ $ docker run -d \
 
 > Will run logrotate with: /usr/bin/logrotate -dvf
 
-# Logrotate Status File
+## Logrotate Status File
 
 Logrotate must remember when files have been rotated when using time intervals, e.g. 'daily'. The status file will be written by default to the container volume but you can specify a custom location with the environment variable LOGROTATE_STATUSFILE.
 
@@ -261,7 +268,7 @@ $ docker run -d \
 
 > Writes the latest status file each logrotation. Reads status files at each start.
 
-# Log and View the Cron Output
+## Log and View the Cron Output
 
 You can specify a separate logfile for cron. The file
 is specified using the environment variable `LOG_FILE`. Must be a full path!
@@ -282,7 +289,7 @@ $ docker run -d \
 
 > You will be able to see cron output every minute in file logs/cron.log.
 
-# Setting a Date Extension
+## Setting a Date Extension
 
 With Logrotate it is possible to split files and name them by the date they were generated when used with `LOGROTATE_DATEFORMAT`. By setting `LOGROTATE_DATEFORMAT` you will enable the Logrotate `dateext` option.
 
@@ -303,7 +310,7 @@ $ docker run -d \
 
 > This will set logrotate to split files and name them by date format -%Y%m%d.
 
-# Disable Auto Update
+## Disable Auto Update
 
 With Logrotate by default it auto update its logrotate configuration file to ensure it only captures all the intended log file in the `LOGS_DIRECTORIES` (before it rotates the log files). It is possible to disable auto update when used with `LOGROTATE_AUTOUPDATE`. By setting `LOGROTATE_AUTOUPDATE` (to not equal true) you will disable the auto update of Logrotate.
 
@@ -352,36 +359,12 @@ an DaemonSet in cluster ,we can deploy an logrotate container in every nodes of 
 daemonset "logrotate" created
 ```
 
-
-## Vagrant
-
-Vagrant is fabulous tool for pulling and spinning up virtual machines like docker with containers. I can configure my development and test environment and simply pull it online. And so can you! Install Vagrant and Virtualbox and spin it up. Change into the project folder and build the project on the spot!
-
-~~~~
-$ vagrant up
-$ vagrant ssh
-[vagrant@localhost ~]$ cd /vagrant
-[vagrant@localhost ~]$ docker-compose up
-~~~~
-
-> Jenkins will be available on localhost:9200 on the host machine. Backups run
-in background.
-
-Vagrant does not leave any docker artifacts on your beloved desktop and the vagrant image can simply be destroyed and repulled if anything goes wrong. Test my project to your heart's content!
-
-First install:
-
-* [Vagrant](https://www.vagrantup.com/)
-* [Virtualbox](https://www.virtualbox.org/)
-
-# Support
+## Support
 
 Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](http://support.blacklabelops.com)
 
-# References
+## References
 
 * [Logrotate](http://www.linuxcommand.org/man_pages/logrotate8.html)
 * [Docker Homepage](https://www.docker.com/)
 * [Docker Userguide](https://docs.docker.com/userguide/)
-* [Vagrant](https://www.vagrantup.com/)
-* [Virtualbox](https://www.virtualbox.org/)
