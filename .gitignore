@@ -1,6 +1,5 @@
 .idea
 .vagrant
 *.json
-*.log
 *.tar
 *.tar.gz
