@@ -310,6 +310,33 @@ $ docker run -d \
 
 > This will set logrotate to split files and name them by date format -%Y%m%d.
 
+## Setting MaxAge and minsize
+
+Maxage and minsize for logs can be configured with the environment variables `LOGROTATE_MAXAGE` and `LOGROTATE_MINSIZE`.
+
+* Maxage: `Remove  rotated  logs  older  than <count> days. The age is only checked if the logfile is to be rotated.`
+* Minsize: `Log files are rotated when they grow bigger than size bytes, but not before the  additionally  specified  time  interval  (daily, weekly, monthly, or yearly).  The related size option is similar except that it is mutually  exclusive  with  the  time  interval options,  and  it  causes log files to be rotated without regard for the last rotation time.  When minsize is used, both the size and timestamp of a log file are considered.`
+
+> [Source](http://manpages.ubuntu.com/manpages/yakkety/man8/logrotate.8.html)
+
+Size Parameter: `If size is followed by k, the size is assumed to  be  in  kilo-bytes.  If the M is used, the size is in megabytes, and if G is used, the size is in gigabytes. So size 100,  size  100k,  size 100M and size 100G are all valid.`
+
+> [Source](http://manpages.ubuntu.com/manpages/yakkety/man8/logrotate.8.html)
+
+Example:
+
+~~~~
+$ docker run -d \
+  -v /var/lib/docker/containers:/var/lib/docker/containers \
+  -v /var/log/docker:/var/log/docker \
+  -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_MAXAGE=60" \
+  -e "LOGROTATE_MINSIZE=100k" \
+  blacklabelops/logrotate
+~~~~
+
+> Maxage is sixty days and minsize is 100 kilobytes.
+
 ## Disable Auto Update
 
 With Logrotate by default it auto update its logrotate configuration file to ensure it only captures all the intended log file in the `LOGS_DIRECTORIES` (before it rotates the log files). It is possible to disable auto update when used with `LOGROTATE_AUTOUPDATE`. By setting `LOGROTATE_AUTOUPDATE` (to not equal true) you will disable the auto update of Logrotate.
@@ -319,7 +346,7 @@ The default `LOGROTATE_AUTOUPDATE` is `true`, to disable the defaults `LOGROTATE
 Example:
 
 ~~~~
-docker run -d \
+$ docker run -d \
   -v /var/lib/docker/containers:/var/lib/docker/containers \
   -v /var/log/docker:/var/log/docker \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
@@ -338,7 +365,7 @@ The default `TZ` is `""`, to set to different time zone. E.g `Australia/Melbourn
 Example:
 
 ~~~~
-docker run -d \
+$ docker run -d \
   -v /var/lib/docker/containers:/var/lib/docker/containers \
   -v /var/log/docker:/var/log/docker \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
