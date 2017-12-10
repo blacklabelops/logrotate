@@ -93,6 +93,10 @@ function resolveLogrotateAutoupdate() {
   fi
 }
 
+logrotate_prerotate=${LOGROTATE_PREROTATE_COMMAND:-""}
+
+logrotate_postrotate=${LOGROTATE_POSTROTATE_COMMAND:-""}
+
 logrotate_dateformat=${LOGROTATE_DATEFORMAT:-""}
 
 resolveSysloggerCommand

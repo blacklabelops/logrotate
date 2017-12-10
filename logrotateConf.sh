@@ -14,6 +14,8 @@ function createLogrotateConfigurationEntry() {
   local conf_dateformat="$9"
   local conf_minsize="${10}"
   local conf_maxage="${11}"
+  local conf_prerotate="${12}"
+  local conf_postrotate="${13}"
   local new_log=
   new_log=${file}" {"
   new_log=${new_log}"\n  su ${file_owner_user} ${file_owner_group}"
@@ -40,6 +42,16 @@ function createLogrotateConfigurationEntry() {
   fi
   if [ -n "${conf_dateformat}" ]; then
     new_log=${new_log}"\n  dateext\n  dateformat ${conf_dateformat}"
+  fi
+  if [ -n "${conf_prerotate}" ]; then
+    new_log=${new_log}"\n  prerotate"
+    new_log=${new_log}"\n\t${conf_prerotate}"
+    new_log=${new_log}"\n  endscript"
+  fi
+  if [ -n "${conf_postrotate}" ]; then
+    new_log=${new_log}"\n  postrotate"
+    new_log=${new_log}"\n\t${conf_postrotate}"
+    new_log=${new_log}"\n  endscript"
   fi
   new_log=${new_log}"\n}"
   echo -e $new_log

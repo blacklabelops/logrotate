@@ -337,6 +337,25 @@ $ docker run -d \
 
 > Maxage is sixty days and minsize is 100 kilobytes.
 
+## Custom Skript execution
+
+Sometimes it is necessary to signal the process in order to start logrotation or stop logrotation. You
+can do this with the environment variables `LOGROTATE_PREROTATE_COMMAND` and `LOGROTATE_POSTROTATE_COMMAND`.
+
+Example:
+
+~~~~
+$ docker run -d \
+  -v /var/lib/docker/containers:/var/lib/docker/containers \
+  -v /var/log/docker:/var/log/docker \
+  -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_PREROTATE_COMMAND=/usr/bin/yourscript.sh" \
+  -e "LOGROTATE_POSTROTATE_COMMAND=/usr/bin/killall -HUP httpd" \
+  blacklabelops/logrotate
+~~~~
+
+> Will print messages before and after rotation.
+
 ## Disable Auto Update
 
 With Logrotate by default it auto update its logrotate configuration file to ensure it only captures all the intended log file in the `LOGS_DIRECTORIES` (before it rotates the log files). It is possible to disable auto update when used with `LOGROTATE_AUTOUPDATE`. By setting `LOGROTATE_AUTOUPDATE` (to not equal true) you will disable the auto update of Logrotate.
