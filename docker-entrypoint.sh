@@ -38,7 +38,7 @@ else
   fi
 fi
 
-logrotate_croninterval=
+logrotate_croninterval="1 0 0 * * *"
 
 if [ -n "${LOGROTATE_INTERVAL}" ]; then
   case "$LOGROTATE_INTERVAL" in
