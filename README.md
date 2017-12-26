@@ -197,7 +197,6 @@ $ docker run -d \
   -v /var/lib/docker/containers:/var/lib/docker/containers \
   -v /var/log/docker:/var/log/docker \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
-  -e "LOGROTATE_INTERVAL=hourly" \
   -e "LOGROTATE_CRONSCHEDULE=* * * * * *" \
   blacklabelops/logrotate
 ~~~~
@@ -218,7 +217,6 @@ $ docker run -d \
   -v $(pwd)/logs:/logs \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_INTERVAL=hourly" \
-  -e "LOGROTATE_CRONSCHEDULE=* * * * * *" \
   -e "LOGROTATE_LOGFILE=/logs/logrotatecron.log" \
   blacklabelops/logrotate
 ~~~~
@@ -259,7 +257,6 @@ Example:
 ~~~~
 $ docker run -d \
   -e "LOGROTATE_INTERVAL=hourly" \
-  -e "LOGROTATE_CRONSCHEDULE=0 * * * * *" \
   -e "LOGROTATE_STATUSFILE=/logrotate-status/logrotate.status" \
   -e "ALL_LOGS_DIRECTORIES=/var/log" \
   -e "LOGROTATE_PARAMETERS=vf" \
@@ -282,7 +279,6 @@ $ docker run -d \
   -v $(pwd)/logs:/logs \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_INTERVAL=hourly" \
-  -e "LOGROTATE_CRONSCHEDULE=* * * * * *" \
   -e "LOG_FILE=/logs/cron.log" \
   blacklabelops/logrotate
 ~~~~
@@ -302,7 +298,6 @@ $ docker run -d \
   -v /var/lib/docker/containers:/var/lib/docker/containers \
   -v /var/log/docker:/var/log/docker \
   -e "LOGROTATE_INTERVAL=daily" \
-  -e "LOGROTATE_CRONSCHEDULE=0 * * * * *" \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_DATEFORMAT=-%Y%m%d" \
   blacklabelops/logrotate

@@ -38,7 +38,30 @@ else
   fi
 fi
 
-logrotate_croninterval="1 0 0 * * *"
+logrotate_croninterval=
+
+if [ -n "${LOGROTATE_INTERVAL}" ]; then
+  case "$LOGROTATE_INTERVAL" in
+    hourly)
+      logrotate_croninterval='@hourly'
+    ;;
+    daily)
+      logrotate_croninterval='@daily'
+    ;;
+    weekly)
+      logrotate_croninterval='@weekly'
+    ;;
+    monthly)
+      logrotate_croninterval='@monthly'
+    ;;
+    yearly)
+      logrotate_croninterval='@yearly'
+    ;;
+    *)
+      logrotate_croninterval="1 0 0 * * *"
+    ;;
+  esac
+fi
 
 if [ -n "${LOGROTATE_CRONSCHEDULE}" ]; then
   logrotate_croninterval=${LOGROTATE_CRONSCHEDULE}
