@@ -9,17 +9,17 @@ function createLogrotateConfigurationEntry() {
   local conf_copies="$4"
   local conf_logfile_compression="$5"
   local conf_logfile_compression_delay="$6"
-  local conf_logrotate_interval="$7"
-  local conf_logrotate_size="$8"
-  local conf_dateformat="$9"
-  local conf_minsize="${10}"
-  local conf_maxage="${11}"
-  local conf_prerotate="${12}"
-  local conf_postrotate="${13}"
+  local conf_logrotate_mode="$7"
+  local conf_logrotate_interval="$8"
+  local conf_logrotate_size="$9"
+  local conf_dateformat="${10}"
+  local conf_minsize="${11}"
+  local conf_maxage="${12}"
+  local conf_prerotate="${13}"
+  local conf_postrotate="${14}"
   local new_log=
   new_log=${file}" {"
   new_log=${new_log}"\n  su ${file_owner_user} ${file_owner_group}"
-  new_log=${new_log}"\n  copytruncate"
   new_log=${new_log}"\n  rotate ${conf_copies}"
   new_log=${new_log}"\n  missingok"
   if [ -n "${conf_logfile_compression}" ]; then
@@ -27,6 +27,9 @@ function createLogrotateConfigurationEntry() {
   fi
   if [ -n "${conf_logfile_compression_delay}" ]; then
     new_log=${new_log}"\n  ${conf_logfile_compression_delay}"
+  fi
+  if [ -n "${conf_logrotate_mode}" ]; then
+    new_log=${new_log}"\n  ${conf_logrotate_mode}"
   fi
   if [ -n "${conf_logrotate_interval}" ]; then
     new_log=${new_log}"\n  ${conf_logrotate_interval}"

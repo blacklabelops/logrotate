@@ -166,6 +166,42 @@ $ docker run -d \
 
 > This will compress the logrotated logs.
 
+## Turn Off Log File delaycompress
+
+When compression is turned on, delaycompress will be set by default. To turn this off,
+set the environment variable `LOGROTATE_DELAYCOMPRESS` to `false`.
+
+Example:
+~~~~
+$ docker run -d \
+  -v /var/lib/docker/containers:/var/lib/docker/containers \
+  -v /var/log/docker:/var/log/docker \
+  -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_COMPRESSION=compress" \
+  -e "LOGROTATE_DELAYCOMPRESS=false" \
+  blacklabelops/logrotate
+~~~~
+
+> This will compress all logrotated logs, including the most recent one.
+
+## Set logrotate mode
+
+By default, logrotate will use copytruncate mode to create a new rotated file, however
+certain log collection applications won't work properly with this configuration. To use a different
+option, such as `create <mode> <owner> <group>`, set the environment variable `LOGROTATE_MODE`.
+
+Example:
+~~~~
+$ docker run -d \
+  -v /var/lib/docker/containers:/var/lib/docker/containers \
+  -v /var/log/docker:/var/log/docker \
+  -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
+  -e "LOGROTATE_MODE=create 0644"
+  blacklabelops/logrotate
+~~~~
+
+> This will rename the current log file, and create a new one in its place
+
 ## Set the Output directory
 
 By default, logrotate will rotate logs in their respective directories. You can
