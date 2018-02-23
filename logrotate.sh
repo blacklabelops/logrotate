@@ -45,13 +45,20 @@ function resolveSysloggerCommand() {
   fi
 }
 
+logrotate_mode="copytruncate"
+function resolveLogrotateMode() {
+  if [ -n "${LOGROTATE_MODE}" ]; then
+    logrotate_mode="${LOGROTATE_MODE}"
+  fi
+}
+
 logrotate_logfile_compression="nocompress"
 logrotate_logfile_compression_delay=""
 
 function resolveLogfileCompression() {
   if [ -n "${LOGROTATE_COMPRESSION}" ]; then
     logrotate_logfile_compression=${LOGROTATE_COMPRESSION}
-    if [ ! "${logrotate_logfile_compression}" = "nocompress" ]; then
+    if [ ! "${logrotate_logfile_compression}" = "nocompress" ] && [ "${LOGROTATE_DELAYCOMPRESS}" != "false" ]; then
       logrotate_logfile_compression_delay="delaycompress"
     fi
   fi
@@ -101,6 +108,7 @@ logrotate_dateformat=${LOGROTATE_DATEFORMAT:-""}
 
 resolveSysloggerCommand
 resolveOldDir
+resolveLogrotateMode
 resolveLogfileCompression
 resolveLogrotateSize
 resolveLogrotateAutoupdate
