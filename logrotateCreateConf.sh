@@ -48,7 +48,7 @@ IFS=$SAVEIFS
 
 for d in ${log_dirs}
 do
-  log_files=$(find ${d} -type f $LOGS_FILE_ENDINGS_INSTRUCTION)
+  log_files=$(find ${d} -type f $LOGS_FILE_ENDINGS_INSTRUCTION) || continue
   for f in ${log_files};
   do
     if [ -f "${f}" ]; then
