@@ -11,7 +11,7 @@ backup volumes.
 
 | Distribution | Version      | Tag          | Dockerfile |
 |--------------|--------------|--------------|------------|
-| Logrotate Alpine | latest, 1.2 | latest, 1.2 | [Dockerfile](https://github.com/blacklabelops/logrotate/blob/master/Dockerfile) |
+| Logrotate Alpine | latest, 1.3 | latest, 1.3 | [Dockerfile](https://github.com/blacklabelops/logrotate/blob/master/Dockerfile) |
 
 ## Make It Short
 
