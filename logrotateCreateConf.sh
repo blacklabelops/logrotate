@@ -6,13 +6,9 @@ function handleSingleFile() {
   local singleFile="$1"
   local file_owner_user=$(stat -c %U ${singleFile})
   local file_owner_group=$(stat -c %G ${singleFile})
-  if [ "$file_owner_user" != "UNKNOWN" ] && [ "$file_owner_group" != "UNKNOWN" ]; then
-    local new_logrotate_entry=$(createLogrotateConfigurationEntry "${singleFile}" "${file_owner_user}" "${file_owner_group}" "${logrotate_copies}" "${logrotate_logfile_compression}" "${logrotate_logfile_compression_delay}" "${logrotate_mode}" "${logrotate_interval}" "${logrotate_size}" "${logrotate_dateformat}" "${logrotate_minsize}" "${logrotate_maxage}" "${logrotate_prerotate}" "${logrotate_postrotate}")
-    echo "Inserting new ${singleFile} to /usr/bin/logrotate.d/logrotate.conf"
-    insertConfigurationEntry "$new_logrotate_entry" "/usr/bin/logrotate.d/logrotate.conf"
-  else
-    echo "File has unknown user or group: ${file}, user: ${file_owner_user}, group: ${file_owner_group}"
-  fi
+  local new_logrotate_entry=$(createLogrotateConfigurationEntry "${singleFile}" "${file_owner_user}" "${file_owner_group}" "${logrotate_copies}" "${logrotate_logfile_compression}" "${logrotate_logfile_compression_delay}" "${logrotate_mode}" "${logrotate_interval}" "${logrotate_size}" "${logrotate_dateformat}" "${logrotate_minsize}" "${logrotate_maxage}" "${logrotate_prerotate}" "${logrotate_postrotate}")
+  echo "Inserting new ${singleFile} to /usr/bin/logrotate.d/logrotate.conf"
+  insertConfigurationEntry "$new_logrotate_entry" "/usr/bin/logrotate.d/logrotate.conf"
 }
 
 # ----- Logfile Crawling ------

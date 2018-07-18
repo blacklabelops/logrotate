@@ -19,7 +19,9 @@ function createLogrotateConfigurationEntry() {
   local conf_postrotate="${14}"
   local new_log=
   new_log=${file}" {"
-  new_log=${new_log}"\n  su ${file_owner_user} ${file_owner_group}"
+  if [ "$file_user" != "UNKNOWN" ] && [ "$file_owner" != "UNKNOWN" ]; then
+    new_log=${new_log}"\n  su ${file_user} ${file_owner}"
+  fi
   new_log=${new_log}"\n  rotate ${conf_copies}"
   new_log=${new_log}"\n  missingok"
   if [ -n "${conf_logfile_compression}" ]; then
