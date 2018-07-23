@@ -19,9 +19,15 @@ function createLogrotateConfigurationEntry() {
   local conf_postrotate="${14}"
   local new_log=
   new_log=${file}" {"
-  if [ "$file_user" != "UNKNOWN" ] && [ "$file_owner" != "UNKNOWN" ]; then
-    new_log=${new_log}"\n  su ${file_user} ${file_owner}"
+
+  if [ "$file_user" == "UNKNOWN" ] || [ "$file_owner" == "UNKNOWN" ]; then
+    bash /usr/bin/logrotate.d/userGroupCreator.sh "${file}"
+    # get new user/group
+    file_user=$(stat -c %U ${singleFile})
+    file_owner=$(stat -c %G ${singleFile})
   fi
+
+  new_log=${new_log}"\n  su ${file_user} ${file_owner}"
   new_log=${new_log}"\n  rotate ${conf_copies}"
   new_log=${new_log}"\n  missingok"
   if [ -n "${conf_logfile_compression}" ]; then
