@@ -47,6 +47,7 @@ COPY update-logrotate.sh /usr/bin/logrotate.d/update-logrotate.sh
 COPY logrotate.sh /usr/bin/logrotate.d/logrotate.sh
 COPY logrotateConf.sh /usr/bin/logrotate.d/logrotateConf.sh
 COPY logrotateCreateConf.sh /usr/bin/logrotate.d/logrotateCreateConf.sh
+COPY userGroupCreator.sh /usr/bin/lograte.d/userGroupCreator.sh
 
 ENTRYPOINT ["/sbin/tini","--","/usr/bin/logrotate.d/docker-entrypoint.sh"]
 VOLUME ["/logrotate-status"]
