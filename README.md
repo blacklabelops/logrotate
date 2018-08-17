@@ -368,10 +368,10 @@ $ docker run -d \
 
 > Maxage is sixty days and minsize is 100 kilobytes.
 
-## Custom Skript execution
+## Custom Script execution
 
 Sometimes it is necessary to signal the process in order to start logrotation or stop logrotation. You
-can do this with the environment variables `LOGROTATE_PREROTATE_COMMAND` and `LOGROTATE_POSTROTATE_COMMAND`.
+can do this with the environment variables `LOGROTATE_PREROTATE_COMMAND`, `LOGROTATE_POSTROTATE_COMMAND` and `LOGROTATE_LASTACTION_COMMAND`.
 
 Example:
 
@@ -382,6 +382,7 @@ $ docker run -d \
   -e "LOGS_DIRECTORIES=/var/lib/docker/containers /var/log/docker" \
   -e "LOGROTATE_PREROTATE_COMMAND=/usr/bin/yourscript.sh" \
   -e "LOGROTATE_POSTROTATE_COMMAND=/usr/bin/killall -HUP httpd" \
+  -E "LOGROTATE_LASTACTION_COMMAND=/usr/bin/lastscript.sh" \
   blacklabelops/logrotate
 ~~~~
 
