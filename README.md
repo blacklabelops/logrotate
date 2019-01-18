@@ -436,14 +436,6 @@ an DaemonSet in cluster ,we can deploy an logrotate container in every nodes of 
 daemonset "logrotate" created
 ```
 
-## Support
-
-Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](http://support.blacklabelops.com)
-
-Maybe no one has ever told you, but munich developers run on beer! If you like my work, share a beer!
-
-[![BeerMe](https://raw.githubusercontent.com/ikkez/Beer-Donation-Button/gh-pages/img/beer_donation_button_single.png)](https://www.paypal.me/donateblacklabelops)
-
 ## References
 
 * [Logrotate](http://www.linuxcommand.org/man_pages/logrotate8.html)
