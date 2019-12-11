@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+      commands:
+        - echo Logging in to Amazon ECR...
+        - $(aws ecr get-login --no-include-email --region us-west-2 --registry-ids 201719377570)
+  build:
+    commands:
+      - src/scripts/build.sh
+      - IMAGE_BASE=201719377570.dkr.ecr.us-west-2.amazonaws.com/logrotate
+      - docker tag deepthink/clientwebsite $IMAGE_BASE:$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - docker tag deepthink/clientwebsite $IMAGE_BASE:latest
+  post_build:
+    commands:
+      - docker push $IMAGE_BASE:$CODEBUILD_RESOLVED_SOURCE_VERSION
+      - docker push $IMAGE_BASE:latest
+      - printf '[{"name":"logrotate","imageUri":"%s"}]' $IMAGE_BASE:$CODEBUILD_RESOLVED_SOURCE_VERSION > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
+  discard-paths: yes

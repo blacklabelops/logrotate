@@ -1,5 +1,5 @@
-FROM blacklabelops/alpine:3.8
-MAINTAINER Steffen Bleul <sbl@blacklabelops.com>
+FROM alpine:3.10
+MAINTAINER ThinkReservations <support@thinkreservations.com>
 
 # logrotate version (e.g. 3.9.1-r0)
 ARG LOGROTATE_VERSION=latest
@@ -12,21 +12,30 @@ RUN export CONTAINER_USER=logrotate && \
     export CONTAINER_GROUP=logrotate && \
     addgroup -g $CONTAINER_GID logrotate && \
     adduser -u $CONTAINER_UID -G logrotate -h /usr/bin/logrotate.d -s /bin/bash -S logrotate && \
+    apk upgrade --update && \
     apk add --update \
+      bash \
       tar \
       gzip \
       wget \
+      tini \
       tzdata && \
     if  [ "${LOGROTATE_VERSION}" = "latest" ]; \
       then apk add logrotate ; \
       else apk add "logrotate=${LOGROTATE_VERSION}" ; \
     fi && \
     mkdir -p /usr/bin/logrotate.d && \
-    wget --no-check-certificate -O /tmp/go-cron.tar.gz https://github.com/michaloo/go-cron/releases/download/v0.0.2/go-cron.tar.gz && \
+    wget -O /tmp/go-cron.tar.gz https://github.com/michaloo/go-cron/releases/download/v0.0.2/go-cron.tar.gz && \
+    echo "f84ef029ec5dd7f5bcb32cd729b2a5bb  /tmp/go-cron.tar.gz" > /tmp/checksum && \
+    md5sum -c /tmp/checksum && \
     tar xvf /tmp/go-cron.tar.gz -C /usr/bin && \
     apk del \
       wget && \
-    rm -rf /var/cache/apk/* && rm -rf /tmp/*
+    # https://github.com/docker-library/docker/pull/84/files
+    if [ ! -e /etc/nsswitch.conf ]; \
+        then echo 'hosts: files dns' > /etc/nsswitch.conf; \
+    fi && \
+    rm -rf /var/cache/apk/* /tmp/* /var/log/*
 
 # environment variable for this container
 ENV LOGROTATE_OLDDIR= \
@@ -42,11 +51,11 @@ ENV LOGROTATE_OLDDIR= \
     LOGROTATE_STATUSFILE= \
     LOG_FILE=
 
-COPY docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh
-COPY update-logrotate.sh /usr/bin/logrotate.d/update-logrotate.sh
-COPY logrotate.sh /usr/bin/logrotate.d/logrotate.sh
-COPY logrotateConf.sh /usr/bin/logrotate.d/logrotateConf.sh
-COPY logrotateCreateConf.sh /usr/bin/logrotate.d/logrotateCreateConf.sh
+COPY src/docker-entrypoint.sh /usr/bin/logrotate.d/docker-entrypoint.sh
+COPY src/update-logrotate.sh /usr/bin/logrotate.d/update-logrotate.sh
+COPY src/logrotate.sh /usr/bin/logrotate.d/logrotate.sh
+COPY src/logrotateConf.sh /usr/bin/logrotate.d/logrotateConf.sh
+COPY src/logrotateCreateConf.sh /usr/bin/logrotate.d/logrotateCreateConf.sh
 
 ENTRYPOINT ["/sbin/tini","--","/usr/bin/logrotate.d/docker-entrypoint.sh"]
 VOLUME ["/logrotate-status"]

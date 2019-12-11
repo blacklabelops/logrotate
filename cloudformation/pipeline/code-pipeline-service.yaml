@@ -1,0 +1,349 @@
+#  Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with
+#  the License. A copy of the License is located at
+#      http://aws.amazon.com/apache2.0/
+#  or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+#  CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and
+#  limitations under the License.
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CodePipeline
+Parameters:
+  ProjectName:
+    Description: Name of the Project
+    Type: String
+  GitHubOAuthToken:
+    Description: Create a token with 'repo' and 'admin:repo_hook' permissions here https://github.com/settings/tokens
+    Type: String
+    NoEcho: true
+  GitHubUser:
+    Description: Enter GitHub username of the repository owner
+    Type: String
+  GitHubRepository:
+    Description: Enter the repository name that should be monitored for changes
+    Type: String
+  GitHubBranch:
+    Description: Enter the GitHub branch to monitored
+    Type: String
+    Default: master
+  CodeBuildImage:
+    Description: CodeBuild image to use when building project
+    Type: String
+    Default: aws/codebuild/eb-java-8-amazonlinux-64:2.4.3
+
+Resources:
+
+  KMSKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: Used by Assumed Roles in Dev/Test/Prod accounts to Encrypt/Decrypt code
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: "2012-10-17"
+        Id: !Ref AWS::StackName
+        Statement:
+          - Sid: Allows admin of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - "kms:Create*"
+              - "kms:Describe*"
+              - "kms:Enable*"
+              - "kms:List*"
+              - "kms:Put*"
+              - "kms:Update*"
+              - "kms:Revoke*"
+              - "kms:Disable*"
+              - "kms:Get*"
+              - "kms:Delete*"
+              - "kms:ScheduleKeyDeletion"
+              - "kms:CancelKeyDeletion"
+            Resource: "*"
+          - Sid: Allow use of the key for CryptoGraphy
+            Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt [PipeLineRole,Arn]
+                - !GetAtt [BuildProjectRole,Arn]
+                - !Sub arn:aws:iam::${DevelopmentAccount}:root
+                - !Sub arn:aws:iam::${ProductionAccount}:root
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+              - kms:ReEncrypt*
+              - kms:GenerateDataKey*
+              - kms:DescribeKey
+            Resource: "*"
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:*
+            Effect: Allow
+            Resource:
+              - !Sub arn:aws:s3:::${S3Bucket}
+              - !Sub arn:aws:s3:::${S3Bucket}/*
+            Principal:
+              AWS:
+                - !Sub arn:aws:iam::${DevelopmentAccount}:role/ToolsAcctCodePipelineECSRole
+                - !Sub arn:aws:iam::${ProductionAccount}:role/ToolsAcctCodePipelineECSRole
+
+  BuildProjectRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ProjectName}-codebuild-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codebuild.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+
+  BuildProjectPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${ProjectName}-codebuild-policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetBucketPolicy
+              - s3:GetObject
+              - s3:ListBucket
+            Resource:
+              - !Join ['',['arn:aws:s3:::',!Ref S3Bucket, '/*']]
+              - !Join ['',['arn:aws:s3:::',!Ref S3Bucket]]
+          - Effect: Allow
+            Action:
+              - kms:*
+            Resource: !GetAtt [KMSKey,Arn]
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+              - ecr:*
+            Resource: arn:aws:ecr:us-west-2:201719377570:*
+          - Effect: Allow
+            Action:
+              - ecr:GetAuthorizationToken
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - ssm:GetParameters
+            Resource:
+                - !Sub "arn:aws:ssm:*:${AWS::AccountId}:parameter/TwistLock/*"
+      Roles:
+        - !Ref BuildProjectRole
+
+  BuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Ref ProjectName
+      Description: !Ref ProjectName
+      EncryptionKey: !GetAtt [KMSKey,Arn]
+      ServiceRole: !GetAtt BuildProjectRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: linuxContainer
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: !Ref CodeBuildImage
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 30
+      Tags:
+        - Key: Name
+          Value: !Ref ProjectName
+
+  ScanProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${ProjectName}-TwistLock
+      Description: !Sub ${ProjectName}-TwistLock
+      EncryptionKey: !GetAtt [KMSKey,Arn]
+      ServiceRole: !GetAtt BuildProjectRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: linuxContainer
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: !Ref CodeBuildImage
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 30
+      Tags:
+        - Key: Name
+          Value: !Ref ProjectName
+
+  PipeLineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ProjectName}-codepipeline-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - codepipeline.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+
+  PipelinePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${ProjectName}-codepipeline-policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - codepipeline:*
+              - iam:ListRoles
+              - cloudformation:Describe*
+              - cloudFormation:List*
+              - codecommit:List*
+              - codecommit:Get*
+              - codecommit:GitPull
+              - codecommit:UploadArchive
+              - codecommit:CancelUploadArchive
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - cloudformation:CreateStack
+              - cloudformation:DeleteStack
+              - cloudformation:DescribeStacks
+              - cloudformation:UpdateStack
+              - cloudformation:CreateChangeSet
+              - cloudformation:DeleteChangeSet
+              - cloudformation:DescribeChangeSet
+              - cloudformation:ExecuteChangeSet
+              - cloudformation:SetStackPolicy
+              - cloudformation:ValidateTemplate
+              - iam:PassRole
+              - s3:ListAllMyBuckets
+              - s3:GetBucketLocation
+            Resource:
+              - "*"
+          - Effect: Allow
+            Action:
+              - kms:*
+            Resource: !GetAtt [KMSKey,Arn]
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetBucketPolicy
+              - s3:GetObject
+              - s3:ListBucket
+            Resource:
+              - !Join ['',['arn:aws:s3:::',!Ref S3Bucket, '/*']]
+              - !Join ['',['arn:aws:s3:::',!Ref S3Bucket]]
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Resource:
+              - !Sub arn:aws:iam::${DevelopmentAccount}:role/ToolsAcctCodePipelineECSRole
+              - !Sub arn:aws:iam::${ProductionAccount}:role/ToolsAcctCodePipelineECSRole
+          - Effect: Allow
+            Action:
+              - codebuild:StartBuild
+              - codebuild:BatchGetBuilds
+              - iam:PassRole
+            Resource: "*"
+      Roles:
+        - !Ref PipeLineRole
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    DependsOn: PipelinePolicy
+    Properties:
+      RoleArn: !GetAtt PipeLineRole.Arn
+      Name: !Ref AWS::StackName
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: GitHub
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              OutputArtifacts:
+                - Name: SourceOutput
+              Configuration:
+                Owner: !Ref GitHubUser
+                Repo: !Ref GitHubRepository
+                Branch: !Ref GitHubBranch
+                OAuthToken: !Ref GitHubOAuthToken
+            - Name: GitHubTwistlock
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: 1
+                Provider: GitHub
+              OutputArtifacts:
+                - Name: TwistLockSourceOutput
+              Configuration:
+                Owner: !Ref GitHubUser
+                Repo: twistlock-image-scan-validator
+                Branch: master
+                OAuthToken: !Ref GitHubOAuthToken
+
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref BuildProject
+              RunOrder: 1
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+
+        - Name: Scan
+          Actions:
+            - Name: Scan
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref ScanProject
+                PrimarySource: TwistLockSourceOutput
+                EnvironmentVariables: '[{"name": "TWISTLOCK_SOURCE_NAME", "value": "BuildOutput", "type": "PLAINTEXT"}, {"name": "DRYRUN", "value": true, "type": "PLAINTEXT"}]'
+              RunOrder: 1
+              InputArtifacts:
+                - Name: TwistLockSourceOutput
+                - Name: BuildOutput
+
+      ArtifactStore:
+        Type: S3
+        Location: !Ref S3Bucket
+        EncryptionKey:
+          Id: !GetAtt [KMSKey,Arn]
+          Type: KMS
