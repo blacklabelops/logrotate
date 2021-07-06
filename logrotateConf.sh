@@ -17,6 +17,7 @@ function createLogrotateConfigurationEntry() {
   local conf_maxage="${12}"
   local conf_prerotate="${13}"
   local conf_postrotate="${14}"
+  local conf_lastaction="${15}"
   local new_log=
   new_log=${file}" {"
   if [ "$file_user" != "UNKNOWN" ] && [ "$file_owner" != "UNKNOWN" ]; then
@@ -56,6 +57,11 @@ function createLogrotateConfigurationEntry() {
   if [ -n "${conf_postrotate}" ]; then
     new_log=${new_log}"\n  postrotate"
     new_log=${new_log}"\n\t${conf_postrotate}"
+    new_log=${new_log}"\n  endscript"
+  fi
+  if [ -n "${conf_lastaction}" ]; then
+    new_log=${new_log}"\n  lastaction"
+    new_log=${new_log}"\n\t${conf_lastaction}"
     new_log=${new_log}"\n  endscript"
   fi
   new_log=${new_log}"\n}"
