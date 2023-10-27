@@ -368,7 +368,7 @@ $ docker run -d \
 
 > Maxage is sixty days and minsize is 100 kilobytes.
 
-## Custom Skript execution
+## Custom Script execution
 
 Sometimes it is necessary to signal the process in order to start logrotation or stop logrotation. You
 can do this with the environment variables `LOGROTATE_PREROTATE_COMMAND` and `LOGROTATE_POSTROTATE_COMMAND`.
@@ -429,20 +429,12 @@ $ docker run -d \
 
 When we run container in Kubernetes, we can use the logrotate container to rotate the logs. As we create
 
-an DaemonSet in cluster ,we can deploy an logrotate container in every nodes of the cluster.
+An DaemonSet in cluster ,we can deploy an logrotate container in every nodes of the cluster.
 
 ```sh
 # kubectl create -f logrotate_ds.yaml
 daemonset "logrotate" created
 ```
-
-## Support
-
-Leave a message and ask questions on Hipchat: [blacklabelops/hipchat](http://support.blacklabelops.com)
-
-Maybe no one has ever told you, but munich developers run on beer! If you like my work, share a beer!
-
-[![BeerMe](https://raw.githubusercontent.com/ikkez/Beer-Donation-Button/gh-pages/img/beer_donation_button_single.png)](https://www.paypal.me/donateblacklabelops)
 
 ## References
 

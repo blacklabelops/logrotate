@@ -42,6 +42,15 @@ do
 done
 IFS=$SAVEIFS
 
+# Check if regex search is enabled
+if [ -n "${LOGS_FILE_REGEX}" ]; then
+  if [ "$COUNTER" -eq "0" ]; then
+    LOGS_FILE_ENDINGS_INSTRUCTION="-regex $LOGS_FILE_REGEX"
+  else
+    LOGS_FILE_ENDINGS_INSTRUCTION="$LOGS_FILE_ENDINGS_INSTRUCTION -o -regex $LOGS_FILE_REGEX"
+  fi
+fi
+
 for d in ${log_dirs}
 do
   log_files=$(find ${d} -type f $LOGS_FILE_ENDINGS_INSTRUCTION) || continue
